@@ -1,5 +1,27 @@
 @include('layout.header')
-
+@if (session()->has('success'))
+    <script>
+        'use strict';
+        window.onload = function() {
+            Swal.fire({
+                icon: "success",
+                title: "Notification",
+                text: "{{ session('success') }}"
+            });
+        }
+    </script>
+@elseif (session()->has('error'))
+    <script>
+        'use strict';
+        window.onload = function() {
+            Swal.fire({
+                icon: "error",
+                title: "Notification",
+                text: "{{ session('error') }}"
+            });
+        }
+    </script>
+@endif
 <div class="bg-primary p-3">
     <h3 class="text-center text-white">{{ env('APP_NAME') }} - Pengadilan Negeri Lubuk Pakam</h3>
     <p class="text-center text-white m-0">
@@ -13,24 +35,13 @@
             Cetak Tiket Untuk Mendapatkan Antrian Layanan
         </p>
         <div class="row text-center d-flex justify-content-center">
-            <div class="col-lg-3 col-md-6 col-sm-12">
-                <div class="card">
-                    <div class="card-body">
-                        <h3 class="text-center">
-                            Meja Pidana
-                        </h3>
-                        <h1 class="text-center text-primary" style="font-size:3rem;">
-                            120
-                        </h1>
-                        <button class="btn btn-primary w-100">
-                            Print / Cetak
-                        </button>
-                        <p class="m-0 mt-3">
-                            Loket Antrian Meja Pidana
-                        </p>
-                    </div>
-                </div>
-            </div>
+            @if ($counters)
+                @foreach ($counters->get() as $counter)
+                    <livewire:screen.card-queue :counterId="Crypt::encrypt($counter->id)" :counterCode="$counter->code" :counterName="$counter->name"
+                        :counterDesc="$counter->description" />
+                @endforeach
+            @else
+            @endif
         </div>
     </div>
 </div>
