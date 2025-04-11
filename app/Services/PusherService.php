@@ -23,7 +23,7 @@ class PusherService
         try {
             $pusher->get('/channels');
         } catch (\Exception $e) {
-            return redirect()->route('queues.index')->with('error', $e->getMessage());
+            return redirect()->back()->with('error', $e->getMessage());
         }
 
         return $pusher;

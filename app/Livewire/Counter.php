@@ -4,19 +4,25 @@ namespace App\Livewire;
 
 use Livewire\Component;
 use App\Services\CounterService;
+use App\Services\PusherService;
 use Illuminate\Support\Facades\Auth;
 
 class Counter extends Component
 {
     public $data;
-    public $counter;
+    public $counter, $countQueue, $waitingQueue, $completedQueue, $skippedQueue;
 
     public function mount(CounterService $counterService)
     {
         $this->counter = $counterService->handleCounter(Auth::user()->officer_id);
+        $this->countQueue = $counterService->calculateQueue(Auth::user()->officer_id);
+
+        $this->waitingQueue = $this->countQueue['waitingQueue'];
+        $this->completedQueue = $this->countQueue['completedQueue'];
+        $this->skippedQueue = $this->countQueue['skippedQueue'];
     }
 
-    public function changeStatus(CounterService $counterService)
+    public function changeStatus(CounterService $counterService, PusherService $pusherService)
     {
         $officer = Auth::user()->officer_id;
         $this->counter = $counterService->handleCounter($officer);
@@ -35,10 +41,22 @@ class Counter extends Component
         $this->counter = $counterService->handleCounter($officer);
         $this->dispatch('show-notification', [
             'message' => $message,
+            'icon' => 'success'
         ]);
+
+        // Broadcast pusher
+        $pusher = $pusherService->init();
+        $pusher->trigger('screen-channel', 'ScreenEvent', '');
+
+        // Load count queue
+        $this->countQueue = $counterService->calculateQueue(Auth::user()->officer_id);
+
+        $this->waitingQueue = $this->countQueue['waitingQueue'];
+        $this->completedQueue = $this->countQueue['completedQueue'];
+        $this->skippedQueue = $this->countQueue['skippedQueue'];
     }
 
-    public function changeBreak(CounterService $counterService)
+    public function changeBreak(CounterService $counterService, PusherService $pusherService)
     {
         $officer = Auth::user()->officer_id;
         $this->counter = $counterService->handleCounter($officer);
@@ -57,8 +75,31 @@ class Counter extends Component
         $this->counter = $counterService->handleCounter($officer);
         $this->dispatch('show-notification', [
             'message' => $message,
+            'icon' => 'success'
         ]);
+
+        // Broadcast pusher
+        $pusher = $pusherService->init();
+        $pusher->trigger('screen-channel', 'ScreenEvent', '');
+
+        // Load count queue
+        $this->countQueue = $counterService->calculateQueue(Auth::user()->officer_id);
+
+        $this->waitingQueue = $this->countQueue['waitingQueue'];
+        $this->completedQueue = $this->countQueue['completedQueue'];
+        $this->skippedQueue = $this->countQueue['skippedQueue'];
     }
+
+    public function loadCount(CounterService $counterService)
+    {
+        // Load count queue
+        $this->countQueue = $counterService->calculateQueue(Auth::user()->officer_id);
+
+        $this->waitingQueue = $this->countQueue['waitingQueue'];
+        $this->completedQueue = $this->countQueue['completedQueue'];
+        $this->skippedQueue = $this->countQueue['skippedQueue'];
+    }
+
     public function render()
     {
         $this->data = [
@@ -67,6 +108,8 @@ class Counter extends Component
             'buttonColor' => $this->counter['buttonColor'],
         ];
 
-        return view('livewire.counter', $this->data);
+        return view('livewire.counter')->with(
+            $this->data
+        );
     }
 }

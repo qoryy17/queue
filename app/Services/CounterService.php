@@ -1,6 +1,8 @@
 <?php
 namespace App\Services;
 
+use Carbon\Carbon;
+use App\Models\Queue\QueueModel;
 use App\Models\Officer\OfficerModel;
 
 class CounterService
@@ -24,6 +26,21 @@ class CounterService
             'counter' => $counter,
             'buttonChange' => $buttonChange,
             'buttonColor' => $buttonColor,
+        ];
+    }
+
+    public function calculateQueue($officer = null)
+    {
+        $counter = OfficerModel::findOrFail($officer)->counter()->first();
+
+        $waitingQueue = QueueModel::where('counter_id', $counter->id)->where('status', 'Waiting')->whereDate('created_at', Carbon::today())->count();
+        $completedQueue = QueueModel::where('counter_id', $counter->id)->where('status', 'Completed')->whereDate('created_at', Carbon::today())->count();
+        $skippedQueue = QueueModel::where('counter_id', $counter->id)->where('status', 'Skipped')->whereDate('created_at', Carbon::today())->count();
+
+        return [
+            'waitingQueue' => $waitingQueue,
+            'completedQueue' => $completedQueue,
+            'skippedQueue' => $skippedQueue
         ];
     }
 }

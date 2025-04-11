@@ -95,5 +95,5 @@ Route::middleware(AuthMiddleware::class)->group(function () {
 
 // Home Screeen Routing
 Route::controller(HomeScreenController::class)->group(function () {
-    Route::get('home-screen', 'index')->name('homeScreeen.index');
+    Route::get('home-screen', 'index')->name('homeScreen.index');
 });
