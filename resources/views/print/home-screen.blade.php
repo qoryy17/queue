@@ -97,7 +97,7 @@
     callingChannel.bind('CallingEvent', function(data) {
         if (responsiveVoice.voiceSupport()) {
             responsiveVoice.speak(data,
-                "Indonesian Female", {
+                "{{ $voice->language }}", {
                     volume: 10,
                     rate: 1,
                     pitch: 0.9

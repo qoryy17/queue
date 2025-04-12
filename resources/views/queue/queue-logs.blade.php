@@ -29,7 +29,7 @@
             <!-- [ Main Content ] start -->
             <div class="card">
                 <div class="card-header">
-                    <button data-pc-animate="fade-in-scale" data-bs-toggle="modal" data-bs-target="#animateModal"
+                    <button data-pc-animate="fade-in-scale" data-bs-toggle="modal" data-bs-target="#animateModal1"
                         class="btn btn-primary"><i class="ph-duotone ph-trash"></i>
                         Delete Queue Logs
                     </button>
@@ -69,7 +69,7 @@
         </div>
     </div>
     <form action="{{ route('queue-logs.delete') }}" method="POST">
-        <div class="modal fade modal-animate" id="animateModal" tabindex="-1" aria-hidden="true">
+        <div class="modal fade modal-animate" id="animateModal1" tabindex="-1" aria-hidden="true">
             <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header">
@@ -127,5 +127,30 @@
                 todayHighlight: true,
             });
         })();
+
+        var animateModal1 = document.getElementById('animateModal1');
+        animateModal1.addEventListener('show.bs.modal', function(event) {
+            var button = event.relatedTarget;
+            var recipient = button.getAttribute('data-pc-animate');
+            var modalTitle = animateModal1.querySelector('.modal-title');
+            // modalTitle.textContent = 'Animate Modal : ' + recipient;
+            animateModal1.classList.add('anim-' + recipient);
+            if (recipient == 'let-me-in' || recipient == 'make-way' || recipient == 'slip-from-top') {
+                document.body.classList.add('anim-' + recipient);
+            }
+        });
+        animateModal1.addEventListener('hidden.bs.modal', function(event) {
+            removeClassByPrefix(animateModal1, 'anim-');
+            removeClassByPrefix(document.body, 'anim-');
+        });
+
+        function removeClassByPrefix(node, prefix) {
+            for (let i = 0; i < node.classList.length; i++) {
+                let value = node.classList[i];
+                if (value.startsWith(prefix)) {
+                    node.classList.remove(value);
+                }
+            }
+        }
     </script>
 @endsection

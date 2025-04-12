@@ -37,6 +37,10 @@ Route::middleware(AuthMiddleware::class)->group(function () {
     Route::controller(HomeController::class)->group(function () {
         Route::get('home/administrator', 'indexAdmin')->name('home.admin');
         Route::get('home/officer', 'indexOfficer')->name('home.officer');
+
+        Route::post('change-password', 'storePassword')->name('password.store');
+        Route::get('profile', 'profile')->name('profile.index');
+        Route::post('profile/store/', 'storeProfile')->name('profile.store');
     });
 
     // Queue Logs Controller Routing

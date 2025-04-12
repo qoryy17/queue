@@ -84,13 +84,14 @@
                                         </div>
                                     </li>
                                     <li class="list-group-item">
-                                        <a href="#" class="dropdown-item">
+                                        <a href="#" class="dropdown-item" data-pc-animate="fade-in-scale"
+                                            data-bs-toggle="modal" data-bs-target="#animateModal">
                                             <span class="d-flex align-items-center">
                                                 <i class="ph-duotone ph-key"></i>
                                                 <span>Change password</span>
                                             </span>
                                         </a>
-                                        <a href="#" class="dropdown-item">
+                                        <a href="{{ route('profile.index') }}" class="dropdown-item">
                                             <span class="d-flex align-items-center">
                                                 <i class="ph-duotone ph-user-circle"></i>
                                                 <span>Edit profile</span>
@@ -119,6 +120,37 @@
 @yield('content')
 
 
+<form action="{{ route('password.store') }}" method="POST">
+    <div class="modal fade modal-animate" id="animateModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Change your password</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"> </button>
+                </div>
+                <div class="modal-body">
+                    @csrf
+                    @method('POST')
+                    <div class="mb-3">
+                        <label for="password">
+                            New Password <span class="text-danger">*</span>
+                        </label>
+                        <input type="password" id="password" name="password" class="form-control" required
+                            placeholder="New Password...">
+                        @error('password')
+                            <small class="text-danger mt-1">* {{ $message }}</small>
+                        @enderror
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-primary shadow-2">Save</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+
 <footer class="pc-footer">
     <div class="footer-wrapper container-fluid">
         <div class="row">
@@ -144,6 +176,31 @@
     function signOut() {
         let formLogout = document.getElementById('formLogout');
         formLogout.submit();
+    }
+
+    var animateModal = document.getElementById('animateModal');
+    animateModal.addEventListener('show.bs.modal', function(event) {
+        var button = event.relatedTarget;
+        var recipient = button.getAttribute('data-pc-animate');
+        var modalTitle = animateModal.querySelector('.modal-title');
+        // modalTitle.textContent = 'Animate Modal : ' + recipient;
+        animateModal.classList.add('anim-' + recipient);
+        if (recipient == 'let-me-in' || recipient == 'make-way' || recipient == 'slip-from-top') {
+            document.body.classList.add('anim-' + recipient);
+        }
+    });
+    animateModal.addEventListener('hidden.bs.modal', function(event) {
+        removeClassByPrefix(animateModal, 'anim-');
+        removeClassByPrefix(document.body, 'anim-');
+    });
+
+    function removeClassByPrefix(node, prefix) {
+        for (let i = 0; i < node.classList.length; i++) {
+            let value = node.classList[i];
+            if (value.startsWith(prefix)) {
+                node.classList.remove(value);
+            }
+        }
     }
 </script>
 
