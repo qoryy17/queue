@@ -16,16 +16,23 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Storage;
 use App\Http\Requests\User\ProfileRequest;
+use App\Models\Queue\QueueLogModel;
 
 class HomeController extends Controller
 {
     protected $route;
     protected $carbon;
+
     public function __construct()
     {
         $this->route = RouterLink::string(Auth::user()->role);
         $this->carbon = new Carbon();
         $this->carbon->setTimezone(env('APP_TIMEZONE'));
+    }
+
+    public function countQueue($status = null)
+    {
+        return QueueLogModel::where('status', $status)->count();
     }
     public function indexAdmin()
     {
@@ -38,7 +45,10 @@ class HomeController extends Controller
             'title' => 'Home | ' . env('APP_NAME'),
             'pageTitle' => ConfigTime::time() . ' ' . Auth::user()->name,
             'breadCumbs' => $breadCumbs,
-            'voice' => VoiceModel::first()
+            'voice' => VoiceModel::first(),
+            'queueCompleted' => $this->countQueue('Completed'),
+            'queueSkipped' => $this->countQueue('Skipped'),
+
         ];
         return view('home.home-admin', $data);
     }
@@ -57,6 +67,8 @@ class HomeController extends Controller
             'pageTitle' => ConfigTime::time() . ' ' . Auth::user()->name,
             'breadCumbs' => $breadCumbs,
             'counter' => $counter,
+            'queueCompleted' => $this->countQueue('Completed'),
+            'queueSkipped' => $this->countQueue('Skipped'),
         ];
         return view('home.home-officer', $data);
     }

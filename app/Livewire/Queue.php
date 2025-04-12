@@ -6,7 +6,7 @@ use Carbon\Carbon;
 use Livewire\Component;
 use App\Services\QueueService;
 use App\Services\PusherService;
-use App\Models\Queue\QueueModel;
+use App\Models\Queue\QueueLogModel;
 use App\Models\Officer\OfficerModel;
 use Illuminate\Support\Facades\Auth;
 
@@ -104,6 +104,15 @@ class Queue extends Component
         // Load queues on page
         $this->loadQueue();
 
+        // Save to queue log
+        QueueLogModel::create([
+            'queue_id' => $id,
+            'queue_number' => $queue,
+            'counter_id' => $counterReady->counter->id,
+            'counter_name' => $counterReady->counter->name,
+            'status' => 'Completed'
+        ]);
+
         // Send notification alert
         $this->notify = $queue . ' Queue Completed, Call Next Queue ! / Antrian ' . $queue . ' diselesaikan, memanggil antrian berikutnya !';
         $this->alert = 'alert-success';
@@ -129,6 +138,15 @@ class Queue extends Component
 
         // Load queues on page
         $this->loadQueue();
+
+        // Save to queue log
+        QueueLogModel::create([
+            'queue_id' => $id,
+            'queue_number' => $queue,
+            'counter_id' => $counterReady->counter->id,
+            'counter_name' => $counterReady->counter->name,
+            'status' => 'Skipped'
+        ]);
 
         // Send notification alert
         $this->notify = $queue . ' Queue Skipped ! / Antrian ' . $queue . ' dilewatkan !';

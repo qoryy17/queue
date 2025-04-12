@@ -36,7 +36,7 @@
                                 class="img-fluid img-bg">
                             <h5 class="mb-4">Queue Counter</h5>
                             <div class="d-flex align-items-center mt-3">
-                                <h3 class="f-w-300 d-flex align-items-center m-b-0">2938</h3>
+                                <h3 class="f-w-300 d-flex align-items-center m-b-0">{{ $queueCompleted }}</h3>
                                 <span class="badge bg-light-success ms-2">Service</span>
                             </div>
                             <p class="text-muted mb-2 text-sm mt-3">
@@ -52,7 +52,7 @@
                                 class="img-fluid img-bg">
                             <h5 class="mb-4">Counter Service</h5>
                             <div class="d-flex align-items-center mt-3">
-                                <h3 class="f-w-300 d-flex align-items-center m-b-0">2938</h3>
+                                <h3 class="f-w-300 d-flex align-items-center m-b-0">{{ $queueSkipped }}</h3>
                                 <span class="badge bg-light-success ms-2">Counter</span>
                             </div>
                             <p class="text-muted mb-2 text-sm mt-3">
@@ -169,36 +169,5 @@
                 chart.render();
             })();
         }
-    </script>
-    <script src="https://code.responsivevoice.org/responsivevoice.js?key={{ Crypt::decrypt($voice->api_key) }}"></script>
-    <script>
-        var pusher = new Pusher('{{ env('PUSHER_APP_KEY') }}', {
-            cluster: '{{ env('PUSHER_APP_CLUSTER') }}'
-        });
-
-        pusher.connection.bind('connected', function() {
-            console.log('Pusher connected successfully.');
-        });
-
-        pusher.connection.bind('disconnected', function() {
-            console.log('Pusher disconnected.');
-        });
-
-        pusher.connection.bind('error', function(err) {
-            console.error('Pusher connection error:', err);
-        });
-
-        var channel = pusher.subscribe('queue-channel');
-        channel.bind('QueueEvent', function(data) {
-            if (responsiveVoice.voiceSupport()) {
-                responsiveVoice.speak("Nomor Antrian. 120. Silahkan Menuju Ke Meja Pidana, Terimakasih",
-                    "Indonesian Female", {
-                        volume: 10,
-                    });
-            } else {
-                console.log("ResponsiveVoice is not supported in this browser.");
-            }
-
-        });
     </script>
 @endsection

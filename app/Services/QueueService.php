@@ -4,6 +4,7 @@ namespace App\Services;
 
 use Carbon\Carbon;
 use App\Models\Queue\QueueModel;
+use App\Models\Queue\QueueLogModel;
 use App\Models\Counter\CounterModel;
 use Illuminate\Support\Facades\Crypt;
 

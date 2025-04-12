@@ -31,6 +31,7 @@ return new class extends Migration {
             $table->string('queue_number');
             $table->unsignedBigInteger('counter_id')->nullable();
             $table->string('counter_name');
+            $table->enum('status', ['Waiting', 'Called', 'Completed', 'Skipped'])->default('Waiting');
             $table->timestamps();
 
             $table->foreign('queue_id')->references('id')->on('queues')->onUpdate('cascade')->onDelete('set null');

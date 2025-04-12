@@ -68,7 +68,7 @@
                                 class="img-fluid img-bg">
                             <h5 class="mb-4">Queue Completed</h5>
                             <div class="d-flex align-items-center mt-3">
-                                <h3 class="f-w-300 d-flex align-items-center m-b-0">2938</h3>
+                                <h3 class="f-w-300 d-flex align-items-center m-b-0">{{ $queueCompleted }}</h3>
                                 <span class="badge bg-light-success ms-2">Service</span>
                             </div>
                             <p class="text-muted mb-2 text-sm mt-3">
@@ -84,7 +84,7 @@
                                 class="img-fluid img-bg">
                             <h5 class="mb-4">Queue Skipped</h5>
                             <div class="d-flex align-items-center mt-3">
-                                <h3 class="f-w-300 d-flex align-items-center m-b-0">2938</h3>
+                                <h3 class="f-w-300 d-flex align-items-center m-b-0">{{ $queueSkipped }}</h3>
                                 <span class="badge bg-light-success ms-2">Services</span>
                             </div>
                             <p class="text-muted mb-2 text-sm mt-3">
